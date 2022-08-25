@@ -1,0 +1,23 @@
+networks:
+  net1:
+
+
+
+services:
+
+
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: service_api
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    ports:
+      - 5433:5432
+    networks:
+      net1:
+        aliases:
+          - database
