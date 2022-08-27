@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo
+from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo, OrderItem, Order
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -15,6 +15,12 @@ class ShopSerializer(serializers.ModelSerializer):
         model = Shop
         fields = ('id', 'name', 'state',)
         read_only_fields = ('id',)
+
+
+class StateShopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = ('state',)
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -54,3 +60,27 @@ class ProductInfoSerializer(serializers.ModelSerializer):
         fields = ('id', 'model', 'product', 'shop', 'quantity', 'price', 'price_rrc', 'product_parameters',)
         read_only_fields = ('id',)
 
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ('id', 'product_info', 'quantity', 'order',)
+        read_only_fields = ('id',)
+        extra_kwargs = {
+            'order': {'write_only': True}
+        }
+
+
+class OrderItemCreateSerializer(OrderItemSerializer):
+    product_info = ProductInfoSerializer(read_only=True)
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    ordered_items = OrderItemCreateSerializer(read_only=True, many=True)
+    total_sum = serializers.IntegerField()
+    contact = ContactSerializer(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ('id', 'ordered_items', 'state', 'dt', 'total_sum', 'contact',)
+        read_only_fields = ('id',)

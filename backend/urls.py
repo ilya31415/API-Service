@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from backend.views import CategoryView, ShopView, ContactView, PartnerUpdate, ProductInfoView
+from backend.views import CategoryView, ShopView, ContactView, PartnerUpdate, ProductInfoView, PartnerStateView
 
 http_method = {"delete": "destroy",
                "post": "create",
@@ -20,5 +20,7 @@ urlpatterns = [
                   path('shops', ShopView.as_view(), name='shops'),
                   path('user/contact/', ContactView.as_view(http_method), name='contact'),
                   path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
+                  path('partner/state', PartnerStateView.as_view({"put": "partial_update",
+                                                                  "get": "retrieve"}), name='partner-state'),
 
               ] + router.urls
