@@ -94,7 +94,6 @@ class PartnerStateView(ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-
 class BasketView(ModelViewSet):
     """
     Представление для работы с корзиной.

@@ -1,7 +1,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from backend.views import CategoryView, ShopView, ContactView, PartnerUpdate, ProductInfoView, PartnerStateView
+from backend.views import CategoryView, ShopView, ContactView, PartnerUpdate, ProductInfoView, PartnerStateView, \
+    BasketView
 
 http_method = {"delete": "destroy",
                "post": "create",
@@ -12,6 +13,7 @@ app_name = 'backend'
 
 router = DefaultRouter()
 router.register('products', ProductInfoView)
+router.register('basket', BasketView)
 
 urlpatterns = [
                   path('auth/', include('djoser.urls')),
