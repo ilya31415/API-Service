@@ -3,13 +3,13 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
+from django.db.models import Prefetch
 from rest_framework.generics import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from backend.services.partner_update import updating_the_price_list_from_file
-from backend.models import Category, Shop, Contact, ProductInfo
+from backend.models import Category, Shop, Contact, ProductInfo, Order, OrderItem
 from backend.serializers import CategorySerializer, ShopSerializer, ContactSerializer, ProductInfoSerializer, \
-    StateShopSerializer, OrderSerializer
+    StateShopSerializer, OrderSerializer, OrderItemSerializer
 from backend.permissions import OnlyShops
 
 
@@ -99,11 +99,18 @@ class BasketView(ModelViewSet):
     Представление для работы с корзиной.
     """
 
-    queryset = Shop.objects.all()
-    serializer_class = OrderSerializer
+    serializer_class = OrderItemSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return OrderItem.objects.prefetch_related(
+            Prefetch('order', queryset=Order.objects.filter(user=self.request.user)))
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
+    def get_object(self):
+        self.queryset = self.get_queryset()
+        obj = get_object_or_404(self.queryset, product_info=self.request.data.get('product_info'))
+        self.check_object_permissions(self.request, obj)
+        return obj

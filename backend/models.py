@@ -216,7 +216,7 @@ class Order(models.Model):
                              related_name='orders', blank=True,
                              on_delete=models.CASCADE)
     dt = models.DateTimeField(auto_now_add=True)
-    state = models.CharField(verbose_name='Статус', choices=STATE_CHOICES, max_length=15)
+    state = models.CharField(verbose_name='Статус', choices=STATE_CHOICES, max_length=15, default='basket')
     contact = models.ForeignKey(Contact, verbose_name='Контакт',
                                 blank=True, null=True,
                                 on_delete=models.CASCADE)
