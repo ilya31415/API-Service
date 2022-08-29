@@ -6,6 +6,13 @@ from django.contrib.auth.models import UserManager as BaseUserManager
 
 # Create your models here.
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+
+
+
 
 STATE_CHOICES = (
     ('basket', 'Статус корзины'),
@@ -219,7 +226,7 @@ class Order(models.Model):
     state = models.CharField(verbose_name='Статус', choices=STATE_CHOICES, max_length=15, default='basket')
     contact = models.ForeignKey(Contact, verbose_name='Контакт',
                                 blank=True, null=True,
-                                on_delete=models.CASCADE)
+                                on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'Заказ'
@@ -245,3 +252,12 @@ class OrderItem(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['order_id', 'product_info'], name='unique_order_item'),
         ]
+
+# @receiver(post_save, sender=Contact)
+# def create_contact_order(instance, created, **kwargs):
+#     if created:
+#         order = Order.objects.get(user=instance.user)
+#         if order:
+#             order.contact = instance
+#             order.save()
+

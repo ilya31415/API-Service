@@ -3,6 +3,7 @@ from rest_framework import serializers
 from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo, OrderItem, Order
 from django.db.utils import IntegrityError
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -61,40 +62,22 @@ class ProductInfoSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
-
-# class OrderItemCreateSerializer(OrderItemSerializer):
-#     product_info = ProductInfoSerializer(read_only=True)
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    # ordered_items = OrderItemCreateSerializer(read_only=True, many=True)
-    # total_sum = serializers.IntegerField()
-    # contact = ContactSerializer(read_only=True)
-    # order_items = OrderItemSerializer(many=True, write_only=True)
-
-    class Meta:
-        model = Order
-        fields = ('id',  'state', 'dt', )
-        read_only_fields = ('id',)
-
-
-
-
 class OrderItemSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         model = OrderItem
-        fields = ('id', 'product_info', 'quantity', 'order',)
+        fields = ('id', 'product_info', 'quantity',)
         read_only_fields = ('id',)
         extra_kwargs = {
             'order': {'write_only': True}
         }
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user')
-
-        order, _ = Order.objects.get_or_create(user=user_id)
+        user = validated_data.pop('user')
+        order, _ = Order.objects.get_or_create(user=user)
+        if _:
+            contact = Contact.objects.get(user=user)
+            order.contact = contact
+            order.save()
         try:
             order_items, _ = OrderItem.objects.get_or_create(order=order, **validated_data)
         except IntegrityError:
@@ -102,13 +85,17 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return order_items
 
 
+class OrderItemCreateSerializer(OrderItemSerializer):
+    product_info = ProductInfoSerializer(read_only=True)
 
 
+class OrderSerializer(serializers.ModelSerializer):
+    ordered_items = OrderItemCreateSerializer(read_only=True, many=True)
 
+    total_sum = serializers.IntegerField()
+    contact = ContactSerializer(read_only=True)
 
-
-
-
-
-
-
+    class Meta:
+        model = Order
+        fields = ('id', 'ordered_items', 'state', 'dt', 'total_sum', 'contact',)
+        read_only_fields = ('id',)

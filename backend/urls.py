@@ -24,9 +24,6 @@ urlpatterns = [
                   path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
                   path('partner/state', PartnerStateView.as_view({"put": "partial_update",
                                                                   "get": "retrieve"}), name='partner-state'),
-                  path('basket/', BasketView.as_view({"delete": "destroy",
-                                                      "post": "create",
-                                                      "put": "partial_update",
-                                                      "get": "list"}), name='contact'),
+                  path('basket/', BasketView.as_view(http_method), name='contact'),
 
               ] + router.urls
