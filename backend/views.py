@@ -4,7 +4,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from django.db.models import Prefetch
+
 from rest_framework.generics import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from backend.services.partner_update import updating_the_price_list_from_file
@@ -12,7 +12,9 @@ from backend.models import Category, Shop, Contact, ProductInfo, Order, OrderIte
 from backend.serializers import CategorySerializer, ShopSerializer, ContactSerializer, ProductInfoSerializer, \
     StateShopSerializer, OrderSerializer, OrderItemSerializer
 from backend.permissions import OnlyShops
-from django.db.models import Q, Sum, F
+
+from backend.services.toolbox_queryset import get_queryset_basket_user, get_queryset_orders_shop, \
+    get_queryset_orders_user
 
 
 class CategoryView(ListAPIView):
@@ -117,10 +119,39 @@ class BasketView(ModelViewSet):
         return obj
 
     def retrieve(self, request, *args, **kwargs):
-        basket = Order.objects.filter(
-            user_id=request.user.id, state='basket').prefetch_related(
-            'ordered_items__product_info__product__category',
-            'ordered_items__product_info__product_parameters__parameter').annotate(
-            total_sum=Sum(F('ordered_items__quantity') * F('ordered_items__product_info__price'))).distinct()
+        basket = get_queryset_basket_user(request)
         serializer = OrderSerializer(basket, many=True)
         return Response(serializer.data)
+
+
+class PartnerOrders(APIView):
+    """
+    Класс для получения заказов поставщиками
+    """
+    permission_classes = [permissions.IsAuthenticated, OnlyShops]
+
+    def get(self, request, *args, **kwargs):
+        order = get_queryset_orders_shop(request)
+        serializer = OrderSerializer(order, many=True)
+        return Response(serializer.data)
+
+
+class OrderView(ModelViewSet):
+    """
+    Класс для получения и размешения заказов пользователями
+    """
+
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return get_queryset_orders_user(self.request)
+
+    def get_object(self):
+        queryset = get_queryset_basket_user(self.request)
+        obj = get_object_or_404(queryset, user=self.request.user)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
