@@ -1,14 +1,11 @@
+import os
+import binascii
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.models import UserManager as BaseUserManager
-
-# Create your models here.
-
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 
 
 
@@ -107,7 +104,7 @@ class User(AbstractUser):
 class Shop(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название')
     url = models.URLField(verbose_name='Ссылка', null=True, blank=True)
-    user = models.OneToOneField(User, verbose_name='Пользователь',
+    user = models.OneToOneField(User, verbose_name='Пользователь', related_name="shop",
                                 blank=True, null=True,
                                 on_delete=models.CASCADE)
     state = models.BooleanField(verbose_name='статус получения заказов', default=True)
@@ -253,11 +250,42 @@ class OrderItem(models.Model):
             models.UniqueConstraint(fields=['order_id', 'product_info'], name='unique_order_item'),
         ]
 
-# @receiver(post_save, sender=Contact)
-# def create_contact_order(instance, created, **kwargs):
-#     if created:
-#         order = Order.objects.get(user=instance.user)
-#         if order:
-#             order.contact = instance
-#             order.save()
+
+class ConfirmOrderToken(models.Model):
+    class Meta:
+        verbose_name = 'Токен подтверждения заказа'
+        verbose_name_plural = 'Токены подтверждения заказа'
+
+    @staticmethod
+    def generate_key():
+        """ generates a pseudo random code using os.urandom and binascii.hexlify """
+        return binascii.hexlify(os.urandom(20)).decode()
+
+    order = models.ForeignKey(
+        Order,
+        related_name='confirm_order_tokens',
+        on_delete=models.CASCADE,
+        verbose_name=_("The order which is associated to this password reset token")
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("When was this token generated")
+    )
+
+
+    key = models.CharField(
+        _("Key"),
+        max_length=64,
+        db_index=True,
+        unique=True
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = self.generate_key()
+        return super(ConfirmOrderToken, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.order
 

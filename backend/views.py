@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from backend.services.partner_update import updating_the_price_list_from_file
-from backend.models import Category, Shop, Contact, ProductInfo, Order, OrderItem
+from backend.models import Category, Shop, Contact, ProductInfo, Order, OrderItem, ConfirmOrderToken
 from backend.serializers import CategorySerializer, ShopSerializer, ContactSerializer, ProductInfoSerializer, \
     StateShopSerializer, OrderSerializer, OrderItemSerializer
 from backend.permissions import OnlyShops
@@ -70,7 +70,9 @@ class ProductInfoView(ModelViewSet):
     """
     Пердставление для поиска товаров
     """
-    queryset = ProductInfo.objects.all()
+    def get_queryset(self):
+        return ProductInfo.objects.filter(shop__state=True)
+
     serializer_class = ProductInfoSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['product_id', 'shop_id', 'external_id', ]
@@ -155,3 +157,25 @@ class OrderView(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+
+class ConfirmOrder(APIView):
+    """
+        Представление для подтверждения  заказа
+    """
+
+    def get(self, request, *args, **kwargs):
+        key = request.query_params.get('key')
+
+        order_token = ConfirmOrderToken.objects.filter(key=key).first()
+        if order_token:
+            order_token.order.state = 'confirmed'
+            order_token.order.save()
+
+            # order_token.delete()
+
+            return Response({"state": True})
+        return Response({"state": False})
+
+

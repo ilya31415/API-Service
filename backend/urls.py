@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from backend.views import CategoryView, ShopView, ContactView, PartnerUpdate, ProductInfoView, PartnerStateView, \
-    BasketView, PartnerOrders, OrderView
+    BasketView, PartnerOrders, OrderView, ConfirmOrder
 
 http_method = {"delete": "destroy",
                "post": "create",
@@ -12,7 +12,7 @@ http_method = {"delete": "destroy",
 app_name = 'backend'
 
 router = DefaultRouter()
-router.register('products', ProductInfoView)
+router.register('products', ProductInfoView, basename='product_info')
 # router.register('order', OrderView, basename='order')
 
 urlpatterns = [
@@ -28,5 +28,6 @@ urlpatterns = [
                   path('partner/orders', PartnerOrders.as_view(), name='partner-orders'),
                   path('order', OrderView.as_view({"put": "partial_update",
                                                                   "get": "list"}), name='order'),
+                  path('confirm/order', ConfirmOrder.as_view(), name='confirm-order'),
 
               ] + router.urls
