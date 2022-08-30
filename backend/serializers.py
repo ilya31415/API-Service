@@ -81,7 +81,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         try:
             order_items, _ = OrderItem.objects.get_or_create(order=order, **validated_data)
         except IntegrityError:
-            raise serializers.ValidationError({'err': "Для изменения количества товара используйте put запрос"})
+            raise serializers.ValidationError({'error': "Для изменения количества товара используйте put запрос"})
         return order_items
 
 
