@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.conf import settings as conf_settings
 from backend.models import Contact, Order, ConfirmOrderToken, User
 from backend.serializers import OrderSerializer
+from backend.services.toolbox_queryset import get_queryset_orders_for_send_email
 
 STATE_CHOICES = {'confirmed', 'assembled', 'sent', 'delivered', 'canceled'}
 
@@ -42,14 +43,14 @@ def send_email_after_changing_order_status(instance, created, **kwargs):
                 data_message = []
 
                 email = shop_admin.email
-                items = instance.ordered_items.filter(product_info__shop__user=shop_admin)
-
-                ser = OrderSerializer(data=items, many=True)
-                if ser.is_valid():
-                    ser.save()
+                data_order = get_queryset_orders_for_send_email(shop_admin.id, instance.id)
 
 
-                    data_message.append(ser.data)
+                ser = OrderSerializer(data_order, many=True)
+
+
+
+                data_message.append(ser.data)
                 msg_admin_shop = EmailMultiAlternatives(
                     # title:
                     f"Новый заказ",
