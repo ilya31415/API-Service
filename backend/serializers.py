@@ -75,9 +75,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
         user = validated_data.pop('user')
         order, _ = Order.objects.get_or_create(user=user)
         if _:
-            contact = Contact.objects.get(user=user)
-            order.contact = contact
-            order.save()
+            try:
+                contact = Contact.objects.get(user=user)
+                order.contact = contact
+                order.save()
+            except Contact.DoesNotExist:
+                order.contact = None
         try:
             order_items, _ = OrderItem.objects.get_or_create(order=order, **validated_data)
         except IntegrityError:
@@ -99,3 +102,11 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ('id', 'ordered_items', 'state', 'dt', 'total_sum', 'contact',)
         read_only_fields = ('id',)
+
+    def validate_state(self, value):
+        if 'new' == value:
+            if self.instance.contact == None:
+                raise serializers.ValidationError({'error': "contact is None"})
+        return value
+
+
