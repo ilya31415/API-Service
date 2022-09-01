@@ -13,7 +13,6 @@ app_name = 'backend'
 
 router = DefaultRouter()
 router.register('products', ProductInfoView, basename='product_info')
-# router.register('order', OrderView, basename='order')
 
 urlpatterns = [
                   path('auth/', include('djoser.urls')),
@@ -27,7 +26,7 @@ urlpatterns = [
                   path('basket/', BasketView.as_view(http_method), name='contact'),
                   path('partner/orders', PartnerOrders.as_view(), name='partner-orders'),
                   path('order', OrderView.as_view({"put": "partial_update",
-                                                                  "get": "list"}), name='order'),
+                                                   "get": "list"}), name='order'),
                   path('confirm/order', ConfirmOrder.as_view(), name='confirm-order'),
 
               ] + router.urls

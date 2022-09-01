@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo, OrderItem, Order
+from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo, OrderItem, Order, \
+    ConfirmOrderToken
 from django.db.utils import IntegrityError
 
 
@@ -73,7 +74,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = validated_data.pop('user')
-        order, _ = Order.objects.get_or_create(user=user)
+        order, _ = Order.objects.get_or_create(user=user, state='basket')
         if _:
             try:
                 contact = Contact.objects.get(user=user)
@@ -108,5 +109,3 @@ class OrderSerializer(serializers.ModelSerializer):
             if self.instance.contact == None:
                 raise serializers.ValidationError({'error': "contact is None"})
         return value
-
-
