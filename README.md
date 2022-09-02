@@ -1,4 +1,4 @@
-[Postman file](./data/api.postman_collection.json) 
+
 
 
 # API Сервис заказа товаров для розничных сетей.
@@ -33,5 +33,5 @@
 <details>
   <summary>📚 Нажмите, чтобы увидеть некоторые примеры</summary>
 
-
+[Postman file](./data/api.postman_collection.json) 
 </details>
