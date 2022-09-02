@@ -6,3 +6,4 @@ ujson
 requests
 djoser
 django_filter
+python-dotenv

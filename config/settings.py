@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g2l8wg6x8^6+^0#-sj5d9b72(_qx2icmh&g18!)+2^&g_h@pf&'
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,12 +85,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'service_api',
-        'USER': 'user',
-        'PASSWORD': 1234,
-        'HOST': '127.0.0.1',
-        'PORT': '5433',
+        'ENGINE': str(os.getenv("ENGINE")),
+        'NAME': str(os.getenv("NAME_DB")),
+        'USER': str(os.getenv("USER_DB")),
+        'PASSWORD': str(os.getenv("PASSWORD_DB")),
+        'HOST': str(os.getenv("HOST_DB")),
+        'PORT': str(os.getenv("PORT_DB")),
     }
 
 }
@@ -136,12 +138,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # smtp
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_PORT = 2525
+EMAIL_HOST = str(os.getenv("EMAIL_HOST"))
+EMAIL_PORT = str(os.getenv("EMAIL_PORT"))
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'api.service@bk.ru'
-EMAIL_HOST_PASSWORD = 'QquzghHvQmnfLyhdEqu0'
+EMAIL_HOST_USER = str(os.getenv("EMAIL_HOST_USER"))
+EMAIL_HOST_PASSWORD = str(os.getenv("EMAIL_HOST_PASSWORD"))
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
