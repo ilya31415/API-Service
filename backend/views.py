@@ -188,8 +188,7 @@ class ConfirmOrder(APIView):
         if order_token:
             order_token.order.state = 'confirmed'
             order_token.order.save()
-
-            # order_token.delete()
+            order_token.delete()
 
             return Response({"state": True})
         return Response({"state": False})
