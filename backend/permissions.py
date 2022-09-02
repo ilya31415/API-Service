@@ -3,7 +3,7 @@ from rest_framework import permissions
 
 class OnlyShops(permissions.BasePermission):
 
-    edit_methods = ("PUT", "GET")
+    edit_methods = ("PUT", "GET", "POST",)
     message = 'Error: Только для магазинов'
 
     def has_permission(self, request, view):
