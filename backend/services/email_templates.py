@@ -7,7 +7,7 @@ from backend.tasks import celery_send_email
 
 def send_order_confirmation_email(instance):
     """
-    Отправка email клиенту: с ссылкой  для подтверждение заказа
+    Отправка email клиенту: с ссылкой  для подтверждения заказа
     """
     token, _ = ConfirmOrderToken.objects.get_or_create(order=instance)
 
