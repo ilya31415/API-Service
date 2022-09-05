@@ -7,3 +7,5 @@ requests
 djoser
 django_filter
 python-dotenv
+redis
+celery

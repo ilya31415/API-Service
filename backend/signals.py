@@ -11,6 +11,9 @@ STATE_CHOICES = {'confirmed', 'assembled', 'sent', 'delivered', 'canceled'}
 
 @receiver(post_save, sender=Contact)
 def create_contact_order(instance, created, **kwargs):
+    """
+    Дабовление новых контактов в корзине
+    """
     if created:
         try:
             order = Order.objects.get(user=instance.user, state='basket')
@@ -23,6 +26,10 @@ def create_contact_order(instance, created, **kwargs):
 
 @receiver(post_save, sender=Order)
 def send_email_after_changing_order_status(instance, created, **kwargs):
+    """
+    Отправка email при изменение статуса в заказе
+    """
+
     if instance.state in STATE_CHOICES:
         # оповещение о изменение статуса заказа
         send_order_status_update_email(instance)
@@ -30,7 +37,7 @@ def send_email_after_changing_order_status(instance, created, **kwargs):
     if instance.state == 'confirmed':
         # оповещение покупателя
         send_gratias_ordinis_email(instance)
-        # оповещение магазинов о новом заказе
+        # оповещение поставщиков о новом заказе
         send_shop_new_order_email(instance)
 
     elif 'new' == instance.state:
