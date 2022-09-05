@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo, OrderItem, Order, \
-    ConfirmOrderToken
+from backend.models import Category, Shop, Contact, Product, ProductParameter, ProductInfo, OrderItem, Order
+
 from django.db.utils import IntegrityError
 
 
