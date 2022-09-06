@@ -31,5 +31,8 @@
 <details>
   <summary>📚 Нажмите, чтобы увидеть некоторые примеры</summary>
 
-[Postman file](./data/api.postman_collection.json) 
+[Postman file](./data/api.postman_collection.json)
+
+[Документация Open API](https://app.swaggerhub.com/apis/FROSTILIA/api-service_documentation/1.0.0#/api/api_v1_auth_users_reset_email_create)
+
 </details>
