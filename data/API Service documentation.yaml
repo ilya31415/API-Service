@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: API Service for ordering goods for retail chains
+  title: API Service documentation
   version: 1.0.0
   description: The application is designed to automate purchases in the retail network.
 paths:

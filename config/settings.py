@@ -178,7 +178,7 @@ DJOSER = {
 # }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'API Service for ordering goods for retail chains',
+    'TITLE': 'API Service documentation',
     'DESCRIPTION': 'The application is designed to automate purchases in the retail network.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
