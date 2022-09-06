@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.vk',
+
 
 ]
 
@@ -157,10 +162,29 @@ DJOSER = {
     'SERIALIZERS': {},
 }
 
+
+#
+# SOCIALACCOUNT_PROVIDERS = {
+#     'vk': {
+#             'APP': {
+#                 'client_id': '51418561',
+#                 'secret': 'GGczL3ZdNA4XG52eTghg',
+#                 'key': ''
+#                    }
+#           },
+# }
+
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+
+
+        # # Needed to login by username in Django admin, regardless of `allauth`
+        # 'django.contrib.auth.backends.ModelBackend',
+        #
+        # # `allauth` specific authentication methods, such as login by e-mail
+        # 'allauth.account.auth_backends.AuthenticationBackend',
     ),
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.UserRateThrottle',
