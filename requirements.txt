@@ -10,3 +10,5 @@ python-dotenv
 redis
 celery
 drf-spectacular
+pytest-django
+model_bakery

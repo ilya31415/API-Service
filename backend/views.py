@@ -23,6 +23,7 @@ class CategoryView(ListAPIView):
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    http_method_names = ['get', ]
 
 
 class ShopView(ListAPIView):
@@ -31,6 +32,7 @@ class ShopView(ListAPIView):
     """
     queryset = Shop.objects.filter(state=True)
     serializer_class = ShopSerializer
+    http_method_names = ['get', ]
 
 
 class ContactView(ModelViewSet):

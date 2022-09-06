@@ -196,7 +196,7 @@ class ProductParameter(models.Model):
 
 class Contact(models.Model):
     user = models.ForeignKey(User, verbose_name='Пользователь',
-                             related_name='contacts', blank=True,
+                             related_name='contacts',
                              on_delete=models.CASCADE)
 
     city = models.CharField(max_length=50, verbose_name='Город')
