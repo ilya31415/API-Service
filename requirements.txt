@@ -9,3 +9,4 @@ django_filter
 python-dotenv
 redis
 celery
+drf-spectacular

@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'drf_spectacular',
+
     'backend',
 
     'django_filters',
@@ -174,6 +177,14 @@ DJOSER = {
 #           },
 # }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Service for ordering goods for retail chains',
+    'DESCRIPTION': 'The application is designed to automate purchases in the retail network.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -194,7 +205,8 @@ REST_FRAMEWORK = {
         'user': '100/minute',
         'anon': '50/minute',
 
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 

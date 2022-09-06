@@ -14,6 +14,8 @@ app_name = 'backend'
 router = DefaultRouter()
 router.register('products', ProductInfoView, basename='product_info')
 
+
+
 urlpatterns = [
                   path('auth/', include('djoser.urls')),
                   path('auth/', include('djoser.urls.authtoken')),
@@ -31,3 +33,5 @@ urlpatterns = [
                   path('confirm/order', ConfirmOrder.as_view(), name='confirm-order'),
 
               ] + router.urls
+
+
