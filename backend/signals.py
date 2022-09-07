@@ -34,7 +34,7 @@ def send_email_after_changing_order_status(instance, created, **kwargs):
         # оповещение о изменение статуса заказа
         send_order_status_update_email(instance)
 
-    if instance.state == 'confirmed':
+    if 'confirmed' == instance.state:
         # оповещение покупателя
         send_gratias_ordinis_email(instance)
         # оповещение поставщиков о новом заказе

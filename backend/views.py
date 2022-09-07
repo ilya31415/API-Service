@@ -19,7 +19,12 @@ from backend.services.toolbox_queryset import get_queryset_basket_user, get_quer
 
 class CategoryView(ListAPIView):
     """
-    Представление для просмотра категорий
+    Представление для просмотра категорий.
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает категории.
+
+    Доступно для всех пользователей
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -29,6 +34,11 @@ class CategoryView(ListAPIView):
 class ShopView(ListAPIView):
     """
     Представление для просмотра списка поставщиков
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает список поставщиков.
+
+    Доступно для всех пользователей
     """
     queryset = Shop.objects.filter(state=True)
     serializer_class = ShopSerializer
@@ -38,10 +48,31 @@ class ShopView(ListAPIView):
 class ContactView(ModelViewSet):
     """
     Представление для работы с контактами:
-    - create,
-    - update,
-    - delete,
-    - retrieve.
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает свои контакты пользователя.
+        POST - Добавить контакты:
+            аргументы:
+                city - Город. * Обязательный аргумент
+                street - Улица. * Обязательный аргумент
+                house - Дом.
+                structure - Корпус.
+                building - Строение.
+                apartment - Квартира.
+                phone - Телефон. * Обязательный аргумент
+
+        PUT - Изменяет изменить свои контакты.
+            аргументы:
+                city - Город. * Обязательный аргумент
+                street - Улица. * Обязательный аргумент
+                house - Дом.
+                structure - Корпус.
+                building - Строение.
+                apartment - Квартира.
+                phone - Телефон. * Обязательный аргумент
+        DELETE - Удалить удалить свои контакты.
+
+    Доступно только для авторизованных пользователей.
     """
 
     serializer_class = ContactSerializer
@@ -71,6 +102,18 @@ class PartnerUpdate(APIView):
 class ProductInfoView(ModelViewSet):
     """
     Пердставление для поиска товаров
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает доступные продукты.
+
+    Доступна фильстрация данных:
+        В params можно передать один или нескольок аргументов.
+         product_id - id продукта.
+         shop_id - id магазина.
+         external_id - Внешний ИД.
+         product__category__name  - название категории.
+
+    Доступно для всех пользователей
     """
 
     def get_queryset(self):
@@ -85,8 +128,15 @@ class ProductInfoView(ModelViewSet):
 class PartnerStateView(ModelViewSet):
     """
     Представление, которое реализует работу со статусом поставщика:
-    - update,
-    - retrieve.
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает текущий статус поставщика.
+        PUT - Изменяет статус.
+            аргументы:
+                state: Bool - Статус.
+
+
+    Доступно только для авторизованных поставщиков.
     """
 
     serializer_class = StateShopSerializer
@@ -146,6 +196,11 @@ class BasketView(ModelViewSet):
 class PartnerOrders(APIView):
     """
     Класс для получения заказов поставщиками
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает новые заказы со статусом "Подтвержден".
+
+    Доступно только для авторизованных поставщиков.
     """
     permission_classes = [permissions.IsAuthenticated, OnlyShops]
 
@@ -158,6 +213,16 @@ class PartnerOrders(APIView):
 class OrderView(ModelViewSet):
     """
     Класс для получения и размешения заказов пользователями
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает все заказы пользователя.
+        PUT - Изменяет статус на "new" переносит из корзины в заказы.
+            аргументы:
+                state = new
+
+    После PUT запроса с state=new отправляется email c ссылкой на подтверждение заказа.
+
+    Доступно только для авторизованных пользователей.
     """
 
     serializer_class = OrderSerializer
@@ -179,6 +244,12 @@ class OrderView(ModelViewSet):
 class ConfirmOrder(APIView):
     """
         Представление для подтверждения  заказа
+
+        Принимает методы HTTP запроса:
+            GET - Возвращает статус подтверждения.
+                :param
+                    :key - токен
+    Доступно для всех пользователей
     """
 
     def get(self, request, *args, **kwargs):
