@@ -30,7 +30,7 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ('city', 'street', 'house', 'structure', 'building', 'apartment', 'user', 'phone')
         extra_kwargs = {
-            'user': {'write_only': True}
+            'user': {'write_only': True, 'required': False}
         }
 
     def create(self, validated_data):

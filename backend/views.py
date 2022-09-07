@@ -78,7 +78,7 @@ class ProductInfoView(ModelViewSet):
 
     serializer_class = ProductInfoSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['product_id', 'shop_id', 'external_id', 'product__category__name' ]
+    filterset_fields = ['product_id', 'shop_id', 'external_id', 'product__category__name']
     http_method_names = ['get']
 
 
@@ -160,8 +160,6 @@ class OrderView(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
 
 
 class ConfirmOrder(APIView):
