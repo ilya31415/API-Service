@@ -7,6 +7,11 @@ from backend.models import Category, ProductInfo, Product, Shop, ProductParamete
 
 
 def updating_the_price_list_from_file(request: Request) -> dict:
+    """
+    Загуржает данные из файла поставщиков
+    :param request:
+    :return:
+    """
     url = request.data.get('url')
     if url:
         try:
