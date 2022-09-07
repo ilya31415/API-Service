@@ -17,7 +17,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = str(os.getenv("SECRET_KEY"))
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -49,8 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
-
-
+    'social_django',
 
 ]
 
@@ -77,13 +74,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -99,7 +96,6 @@ DATABASES = {
     }
 
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -118,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -152,7 +147,6 @@ EMAIL_HOST_PASSWORD = str(os.getenv("EMAIL_HOST_PASSWORD"))
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
 DJOSER = {
 
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
@@ -162,32 +156,26 @@ DJOSER = {
     'SERIALIZERS': {},
 }
 
-
-#
-# SOCIALACCOUNT_PROVIDERS = {
-#     'vk': {
-#             'APP': {
-#                 'client_id': '51418561',
-#                 'secret': 'GGczL3ZdNA4XG52eTghg',
-#                 'key': ''
-#                    }
-#           },
-# }
+SOCIAL_AUTH_POSTGRES_ENABLED = True
+SOCIAL_AUTH_VK_OAUTH2_KEY = str(os.getenv("SOCIAL_AUTH_VK_OAUTH2_KEY"))
+SOCIAL_AUTH_VK_OAUTH2_SECRET = str(os.getenv("SOCIAL_AUTH_VK_OAUTH2_SECRET"))
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+SOCIAL_AUTH_URL_NAMESPACE = "social"
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'API Service documentation',
     'DESCRIPTION': 'The application is designed to automate purchases in the retail network.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
+
 }
 
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-
-
+        'social_core.backends.vk.VKOAuth2',
+        'django.contrib.auth.backends.ModelBackend',
 
     ),
     'DEFAULT_THROTTLE_CLASSES': [
@@ -203,8 +191,6 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
-
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/1'
 CELERY_BROKER_TRANSPORT = 'redis'
-

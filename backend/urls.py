@@ -19,7 +19,7 @@ router.register('products', ProductInfoView, basename='product_info')
 urlpatterns = [
                   path('auth/', include('djoser.urls')),
                   path('auth/', include('djoser.urls.authtoken')),
-                  # path('accounts/', include('allauth.urls')),
+                  path('', include('social_django.urls', namespace='social') ),
                   path('categories', CategoryView.as_view(), name='categories'),
                   path('shops', ShopView.as_view(), name='shops'),
                   path('user/contact/', ContactView.as_view(http_method), name='contact'),
