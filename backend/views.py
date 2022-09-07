@@ -106,6 +106,20 @@ class PartnerStateView(ModelViewSet):
 class BasketView(ModelViewSet):
     """
     Представление для работы с корзиной.
+
+    Принимает методы HTTP запроса:
+        GET - Возвращает содержимае корзины.
+        POST - Добовляет продукт в корзину.
+            аргументы:
+                product_info - id продукта.
+                quantity - количество.
+        PUT - Изменяет количества продукта в корзине.
+            аргументы:
+                product_info - id продукта.
+                quantity - количество.
+        DELETE - Удалить продукт из корзины.
+
+    Доступно только для авторизованных пользователей.
     """
 
     serializer_class = OrderItemSerializer
